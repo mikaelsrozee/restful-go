@@ -1,9 +1,13 @@
+# Exclude .env files
+.env
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
+restful-go
 
 # Test binary, built with `go test -c`
 *.test
