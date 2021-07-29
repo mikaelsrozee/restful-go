@@ -19,6 +19,22 @@ type QnrResponse struct {
 
 var QnrResponses []QnrResponse
 
+func deleteQnrResponse(w http.ResponseWriter, r *http.Request) {
+    vars := mux.Vars(r)
+    id, err := uuid.Parse(vars["id"])
+
+    if (err != nil) {
+        log.Fatal(err)
+        return
+    }
+
+    for index, response := range QnrResponses {
+        if response.Id == id {
+            QnrResponses = append(QnrResponses[:index], QnrResponses[index+1:]...)
+        }
+    }
+}
+
 func addQnrResponse(w http.ResponseWriter, r *http.Request) {
     // get the body of the POST request
     // return the response body as a string
@@ -62,6 +78,8 @@ func handleRequests() {
 
     router.HandleFunc("/responses", addQnrResponse).Methods("POST")
     router.HandleFunc("/responses/{id}", getQnrResponse).Methods("GET")
+
+    router.HandleFunc("/responses/{id}", deleteQnrResponse).Methods("DELETE")
 
     log.Fatal(http.ListenAndServe(":10000", router))
 }
