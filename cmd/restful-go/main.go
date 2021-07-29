@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type QnrResponse struct {
@@ -21,8 +23,11 @@ func getAllQnrResponses(w http.ResponseWriter, r *http.Request){
 }
 
 func handleRequests() {
-    http.HandleFunc("/responses", getAllQnrResponses)
-    log.Fatal(http.ListenAndServe(":10000", nil))
+    router := mux.NewRouter().StrictSlash(true)
+
+    router.HandleFunc("/responses", getAllQnrResponses)
+
+    log.Fatal(http.ListenAndServe(":10000", router))
 }
 
 func main() {
