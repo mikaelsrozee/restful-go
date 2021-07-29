@@ -74,12 +74,12 @@ func getAllQnrResponses(w http.ResponseWriter, r *http.Request) {
 func handleRequests() {
     router := mux.NewRouter().StrictSlash(true)
 
-    router.HandleFunc("/responses", getAllQnrResponses).Methods("GET")
+    router.HandleFunc("/api/v1/responses", getAllQnrResponses).Methods("GET")
 
-    router.HandleFunc("/responses", addQnrResponse).Methods("POST")
-    router.HandleFunc("/responses/{id}", getQnrResponse).Methods("GET")
+    router.HandleFunc("/api/v1/responses", addQnrResponse).Methods("POST")
+    router.HandleFunc("/api/v1/responses/{id}", getQnrResponse).Methods("GET")
 
-    router.HandleFunc("/responses/{id}", deleteQnrResponse).Methods("DELETE")
+    router.HandleFunc("/api/v1/responses/{id}", deleteQnrResponse).Methods("DELETE")
 
     log.Fatal(http.ListenAndServe(":10000", router))
 }
