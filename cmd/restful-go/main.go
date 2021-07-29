@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -18,7 +18,20 @@ type QnrResponse struct {
 
 var QnrResponses []QnrResponse
 
-func getQnrResponse(w http.ResponseWriter, r *http.Request){
+func addQnrResponse(w http.ResponseWriter, r *http.Request) {
+    // get the body of the POST request
+    // return the response body as a string
+    reqBody, _ := ioutil.ReadAll(r.Body)
+    var response QnrResponse
+    json.Unmarshal(reqBody, &response)
+
+    // append response to global variable
+    QnrResponses = append(QnrResponses, response)
+
+    json.NewEncoder(w).Encode(response)
+}
+
+func getQnrResponse(w http.ResponseWriter, r *http.Request) {
     vars := mux.Vars(r)
     key := vars["id"]
 
@@ -30,15 +43,16 @@ func getQnrResponse(w http.ResponseWriter, r *http.Request){
     }
 }
 
-func getAllQnrResponses(w http.ResponseWriter, r *http.Request){
-    fmt.Println("Endpoint hit: all qnr responses")
+func getAllQnrResponses(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(QnrResponses)
 }
 
 func handleRequests() {
     router := mux.NewRouter().StrictSlash(true)
 
-    router.HandleFunc("/responses", getAllQnrResponses)
+    router.HandleFunc("/responses", getAllQnrResponses).Methods("GET")
+
+    router.HandleFunc("/responses", addQnrResponse).Methods("POST")
     router.HandleFunc("/responses/{id}", getQnrResponse)
 
     log.Fatal(http.ListenAndServe(":10000", router))
