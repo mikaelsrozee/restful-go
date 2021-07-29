@@ -6,14 +6,15 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 )
 
 type QnrResponse struct {
-    Id string `json:"Id"`
-    Name string `json:"Name"`
-    Body string `json:"Body"`
-    Email string `json:"Email"`
+    Id uuid.UUID `json:"id"`
+    Name string `json:"name"`
+    Body string `json:"body"`
+    Email string `json:"email"`
 }
 
 var QnrResponses []QnrResponse
@@ -25,6 +26,8 @@ func addQnrResponse(w http.ResponseWriter, r *http.Request) {
     var response QnrResponse
     json.Unmarshal(reqBody, &response)
 
+    response.Id, _ = uuid.NewRandom()
+
     // append response to global variable
     QnrResponses = append(QnrResponses, response)
 
@@ -33,7 +36,12 @@ func addQnrResponse(w http.ResponseWriter, r *http.Request) {
 
 func getQnrResponse(w http.ResponseWriter, r *http.Request) {
     vars := mux.Vars(r)
-    key := vars["id"]
+    key, err := uuid.Parse(vars["id"])
+
+    if (err != nil) {
+        log.Fatal(err)
+        return
+    }
 
     // Loop through each response, and if the ID matches, return the response
     for _, response := range QnrResponses {
@@ -59,10 +67,7 @@ func handleRequests() {
 }
 
 func main() {
-    QnrResponses = []QnrResponse{
-        {Id: "1", Name: "Mikael Rozee", Body: "I am awesome.", Email: "foo@example.com"},
-        {Id: "2", Name: "Other Person", Body: "I am less awesome.", Email: "other@example.com"},
-        {Id: "3", Name: "Extra Dude", Body: "I am the least awesome.", Email: "extra@example.com"},
-    }
+    QnrResponses = []QnrResponse{}
+
     handleRequests()
 }
