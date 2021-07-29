@@ -61,7 +61,7 @@ func handleRequests() {
     router.HandleFunc("/responses", getAllQnrResponses).Methods("GET")
 
     router.HandleFunc("/responses", addQnrResponse).Methods("POST")
-    router.HandleFunc("/responses/{id}", getQnrResponse)
+    router.HandleFunc("/responses/{id}", getQnrResponse).Methods("GET")
 
     log.Fatal(http.ListenAndServe(":10000", router))
 }
