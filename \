@@ -1,0 +1,3 @@
+DB_USER=mysql
+DB_PASSWORD=mypassword
+DB_NAME=test
