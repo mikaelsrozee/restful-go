@@ -1,6 +1,9 @@
 # Exclude .env files
 .env
 
+# Exclude database file
+*.db
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
